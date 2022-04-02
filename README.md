@@ -1,7 +1,5 @@
-# nodeSimpleBackend
+# proyecto-final
 
-Base route hosted in: https://violet-shrouded-lungfish.glitch.me/products/
+Base route hosted in: 
 
-Use the route /getProducts to obtain all the products of the list
-
-Use the route /getRandomProduct to obtain a random product of the list
+See the postman.json to learn how to use this backend
