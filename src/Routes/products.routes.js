@@ -1,13 +1,19 @@
 import express from 'express'
-import { getProducts, getRandomProduct, getProductById, postProduct, updateProduct, deleteProduct } from '../Controllers/products.controllers.js'
+import {
+  getProducts,
+  getRandomProduct,
+  getProductById,
+  postProduct,
+  updateProduct,
+  deleteProduct
+} from '../controllers'
+import { verifyToken } from '../middlewares'
 
-const router = express.Router()
+export const productRouter = express.Router()
 
-router.get('/products', getProducts)
-router.get('/products/random', getRandomProduct)
-router.get('/products/:id', getProductById)
-router.post('/products', postProduct)
-router.put('/products/:id', updateProduct)
-router.delete('/products/:id', deleteProduct)
-
-export default router
+productRouter.get('/products', getProducts)
+productRouter.get('/products/random', getRandomProduct)
+productRouter.get('/products/:id', getProductById)
+productRouter.post('/products', verifyToken, postProduct)
+productRouter.put('/products/:id', verifyToken, updateProduct)
+productRouter.delete('/products/:id', verifyToken, deleteProduct)

@@ -9,8 +9,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./app.js",
-    "nodemon": "nodemon ./app.js"
+    "start": "node --experimental-specifier-resolution=node ./app.js",
+    "build": "webpack",
+    "nodemon": "nodemon --experimental-specifier-resolution=node ./app.js",
+    "standard": "npx standard --fix"
   },
   "author": "",
   "license": "ISC",
@@ -19,8 +21,10 @@
     "standard": "^16.0.4"
   },
   "dependencies": {
+    "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
     "socket.io": "^4.4.1"
   }
 }

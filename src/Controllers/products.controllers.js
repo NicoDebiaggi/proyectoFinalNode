@@ -1,8 +1,9 @@
 import { createRequire } from 'module'
+import * as fs from 'fs'
 const require = createRequire(import.meta.url)
-export const products = require('../assets/products.json')
+const products = require('../assets/products.json')
 
-export const getMaxId = () => {
+export const getMaxIdProducts = () => {
   let maxId = 0
   products?.forEach(product => {
     if (product.id > maxId) {
@@ -50,12 +51,17 @@ export const getProductById = (req, res, next) => {
 export const postProduct = (req, res, next) => {
   try {
     const newProduct = {
-      title: req.body.title,
+      name: req.body.name,
+      description: req.body.description,
+      code: req.body.code,
+      stock: req.body.stock,
       price: req.body.price,
       thumbnail: req.body.thumbnail,
-      id: getMaxId() + 1
+      id: getMaxIdProducts() + 1,
+      timestamp: new Date().toISOString()
     }
     products.push(newProduct)
+    fs.writeFileSync('./src/assets/products.json', JSON.stringify(products))
     res.send(newProduct)
   } catch (error) {
     error.status = 500
@@ -74,6 +80,7 @@ export const updateProduct = (req, res, next) => {
         ...updatedProduct,
         id: productId
       }
+      fs.writeFileSync('./src/assets/products.json', JSON.stringify(products))
       res.send(products[productIndex])
     } else {
       const error = new Error(`Product with id ${productId} not found`)
@@ -92,6 +99,7 @@ export const deleteProduct = (req, res, next) => {
 
     if (~productIndex) {
       products.splice(productIndex, 1)
+      fs.writeFileSync('./src/assets/products.json', JSON.stringify(products))
       res.send(products)
     } else {
       const error = new Error(`Product with id ${productId} not found`)
