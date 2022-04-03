@@ -6,8 +6,8 @@ import {
   postProduct,
   updateProduct,
   deleteProduct
-} from '../controllers'
-import { verifyToken } from '../middlewares'
+} from '../controllers/index.js'
+import { verifyToken } from '../middlewares/index.js'
 
 export const productRouter = express.Router()
 

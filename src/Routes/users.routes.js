@@ -2,7 +2,7 @@ import express from 'express'
 import {
   genAdminToken,
   verifyToken
-} from '../controllers'
+} from '../controllers/index.js'
 
 export const userRouter = express.Router()
 

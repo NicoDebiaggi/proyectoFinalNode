@@ -5,7 +5,7 @@ import {
   getCart,
   addProductOnCart,
   removeProductOnCart
-} from '../controllers'
+} from '../controllers/index.js'
 
 export const cartRouter = express.Router()
 
