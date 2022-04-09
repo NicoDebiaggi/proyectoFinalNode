@@ -1,5 +1,5 @@
 # proyecto-final
-Base route hosted in: https://tender-yielding-ironclad.glitch.me/api
+Base route hosted in: 
 
 See the postman.json to learn how to use this backend
 
