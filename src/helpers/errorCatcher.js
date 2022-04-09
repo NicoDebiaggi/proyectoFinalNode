@@ -48,6 +48,10 @@ export const getError = (errorCode, errorMsg) => {
       error.status = 422
       error.message = errorMsg || 'Invalid data'
       break
+    case 'SQLITE_CONSTRAINT_FOREIGNKEY':
+      error.status = 422
+      error.message = errorMsg || 'Invalid data'
+      break
     case 'UNAUTHORIZED':
       error.status = 401
       error.message = errorMsg || 'Not authorized'

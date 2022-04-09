@@ -20,6 +20,11 @@ export const getCartDb = async (cartId) => {
         id: cartId,
         products: products
       }
+    } else {
+      return {
+        id: cartId,
+        products: []
+      }
     }
   } catch (error) {
     return error
