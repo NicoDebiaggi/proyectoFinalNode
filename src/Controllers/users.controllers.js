@@ -31,6 +31,7 @@ export const verifyToken = (req, res, next) => {
     } else {
       const error = new Error('Token is required')
       error.status = 401
+      error.code = 'UNAUTHORIZED'
       throw error
     }
   } catch (error) {
