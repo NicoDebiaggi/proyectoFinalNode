@@ -7,6 +7,7 @@ export const verifyToken = (req, res, next) => {
         if (err) {
           const error = new Error('Not authorized')
           error.status = 401
+          error.code = 'UNAUTHORIZED'
           throw error
         }
         req.user = decode
@@ -15,9 +16,10 @@ export const verifyToken = (req, res, next) => {
     } else {
       const error = new Error('Not authorized')
       error.status = 401
+      error.code = 'UNAUTHORIZED'
       throw error
     }
   } catch (error) {
-    return next(error)
+    next(error)
   }
 }

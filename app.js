@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import express from 'express'
 import { productRouter, cartRouter, userRouter } from './src/routes/index.js'
+import { getError } from './src/helpers/index.js'
 import http from 'http'
 
 const app = express()
@@ -15,8 +16,9 @@ app.use('/api', cartRouter)
 app.use('/api', userRouter)
 
 app.use(function (err, req, res, next) {
+  const error = getError(err.code, err.message)
   console.log(err)
-  res.status(err.status).send({ err: err.message })
+  res.status(error.status).send(error)
 })
 
 server.listen(PORT, () => {
