@@ -1,5 +1,3 @@
-import { createRequire } from 'module'
-import * as fs from 'fs'
 import {
   createCartTable,
   createCartDb,
@@ -8,22 +6,9 @@ import {
   addProductToCartDb,
   removeProductOnCartDb
 } from '../models/index.js'
-const require = createRequire(import.meta.url)
-const carts = require('../assets/carts.json')
-const products = require('../assets/products.json')
 
 // initialize tables
 createCartTable()
-
-export const getMaxIdCart = () => {
-  let maxId = 0
-  carts?.forEach(cart => {
-    if (cart.id > maxId) {
-      maxId = cart.id
-    }
-  })
-  return maxId
-}
 
 export const createCart = async (req, res, next) => {
   try {
