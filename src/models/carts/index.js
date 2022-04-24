@@ -1,6 +1,0 @@
-export * from './createTable.models.js'
-export * from './createCarts.models.js'
-export * from './addProductsToCart.models.js'
-export * from './getCarts.models.js'
-export * from './deleteCarts.models.js'
-export * from './removeProductOnCart.models.js'

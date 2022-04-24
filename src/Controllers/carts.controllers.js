@@ -1,23 +1,16 @@
 import {
-  createCartTable,
   createCartDb,
   deleteCartDb,
   getCartDb,
   addProductToCartDb,
   removeProductOnCartDb
-} from '../models/index.js'
-
-// initialize tables
-createCartTable()
+} from '../database/querys/index.js'
 
 export const createCart = async (req, res, next) => {
   try {
-    const dbRes = await createCartDb()
-    if (!dbRes.code) {
-      res.send({ id: dbRes })
-    } else {
-      throw dbRes
-    }
+    const userId = req.body.userId
+    const dbRes = await createCartDb(userId)
+    res.send(dbRes)
   } catch (error) {
     next(error)
   }
@@ -25,12 +18,10 @@ export const createCart = async (req, res, next) => {
 
 export const deleteCart = (req, res, next) => {
   try {
-    const cartId = Number(req.params.id)
+    const cartId = req.params.id
     const dbRes = deleteCartDb(cartId)
-    if (!dbRes.code) {
+    if (dbRes) {
       res.send(`Cart with id ${cartId} deleted`)
-    } else {
-      throw dbRes
     }
   } catch (error) {
     return next(error)
@@ -39,7 +30,7 @@ export const deleteCart = (req, res, next) => {
 
 export const getCart = async (req, res, next) => {
   try {
-    const cartId = Number(req.params.id)
+    const cartId = req.params.id
     const cart = await getCartDb(cartId)
     if (cart) {
       res.send(cart)
@@ -55,8 +46,8 @@ export const getCart = async (req, res, next) => {
 
 export const addProductOnCart = async (req, res, next) => {
   try {
-    const cartId = Number(req.params.id)
-    const productId = Number(req.params.productId)
+    const cartId = req.params.id
+    const productId = req.params.productId
     const amount = isNaN(Number(req.body.amount)) ? 1 : Number(req.body.amount)
     const dbRes = await addProductToCartDb(cartId, productId, amount)
     if (!dbRes.code) {
@@ -72,8 +63,8 @@ export const addProductOnCart = async (req, res, next) => {
 
 export const removeProductOnCart = async (req, res, next) => {
   try {
-    const cartId = Number(req.params.id)
-    const productId = Number(req.params.productId)
+    const cartId = req.params.id
+    const productId = req.params.productId
 
     const dbRes = await removeProductOnCartDb(cartId, productId)
     if (!dbRes.code) {

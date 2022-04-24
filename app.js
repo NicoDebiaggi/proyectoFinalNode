@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import './src/configs/db.configs.js'
 import express from 'express'
 import { productRouter, cartRouter, userRouter } from './src/routes/index.js'
 import { getError } from './src/helpers/index.js'

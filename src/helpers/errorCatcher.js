@@ -20,6 +20,10 @@ export const getError = (errorCode, errorMsg) => {
       error.status = 500
       error.message = errorMsg || 'Product not created'
       break
+    case 'ERR_ASSERTION':
+      error.status = 500
+      error.message = errorMsg || 'Assertion error'
+      break
     case 'PRODUCT_NOT_UPDATED':
       error.status = 500
       error.message = errorMsg || 'Product not updated'

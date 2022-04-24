@@ -1,15 +1,11 @@
 import {
-  createProductTable,
   addProductDb,
   getProductsDb,
   getRandomProductDb,
   getProductByIdDb,
-  updatedProductDb,
+  updateProductDb,
   deleteProductDb
-} from '../models/index.js'
-
-// initialize table
-createProductTable()
+} from '../database/querys/index.js'
 
 export const getProducts = async (req, res, next) => {
   try {
@@ -31,9 +27,9 @@ export const getRandomProduct = async (req, res, next) => {
 
 export const getProductById = async (req, res, next) => {
   try {
-    const productId = Number(req.params.id)
+    const productId = (req.params.id)
     const product = await getProductByIdDb(productId)
-    if (product && product.length > 0) {
+    if (product) {
       res.send(product)
     } else {
       const error = new Error(`Product with id ${productId} not found`)
@@ -56,11 +52,7 @@ export const addProduct = async (req, res, next) => {
       thumbnail: req.body.thumbnail
     }
     const dbRes = await addProductDb(newProduct)
-    if (!dbRes.code) {
-      res.send({ ...newProduct, id: dbRes })
-    } else {
-      throw dbRes
-    }
+    res.send(dbRes)
   } catch (error) {
     next(error)
   }
@@ -68,10 +60,10 @@ export const addProduct = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
   try {
-    const productId = Number(req.params.id)
+    const productId = req.params.id
     const updatedProduct = req.body
-    const dbRes = await updatedProductDb(productId, updatedProduct)
-    if (!dbRes.code) {
+    const dbRes = await updateProductDb(productId, updatedProduct)
+    if (dbRes) {
       res.send(`Product with id ${productId} updated`)
     } else {
       throw dbRes
@@ -83,9 +75,9 @@ export const updateProduct = async (req, res, next) => {
 
 export const deleteProduct = async (req, res, next) => {
   try {
-    const productId = Number(req.params.id)
+    const productId = req.params.id
     const dbRes = await deleteProductDb(productId)
-    if (!dbRes.code) {
+    if (dbRes) {
       res.send(`Product with id ${productId} deleted`)
     } else {
       throw dbRes
