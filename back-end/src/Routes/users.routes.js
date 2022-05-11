@@ -1,10 +1,10 @@
 import express from 'express'
 import {
-  genAdminToken,
+  login,
   verifyToken
 } from '../controllers/index.js'
 
 export const userRouter = express.Router()
 
-userRouter.get('/admin', genAdminToken)
+userRouter.post('/login', login)
 userRouter.post('/admin', verifyToken)
