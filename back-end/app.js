@@ -27,10 +27,6 @@ app.use(session({
     maxAge: 60 * 1000
   }
 }))
-
-app.get('/testCookie', (req, res) => {
-  res.cookie('test', 'test').send('test')
-})
 app.use('/api', productRouter)
 app.use('/api', cartRouter)
 app.use('/api', userRouter)
