@@ -16,7 +16,7 @@ export const Home = () => {
     if (res.status === 200) {
       console.log('Session is valid')
     } else {
-      navigate('/login')
+      navigate('/SignIn')
     }
   }
 

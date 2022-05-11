@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { Box, Typography } from '@mui/material'
 
-export const TransitionScreen = ({ name }) => {
+export const TransitionScreen = () => {
   useEffect(() => {
     setTimeout(() => {
-      window.location.href = '/login'
+      window.location.href = '/SignIn'
     }
     , 2000)
   }, [])
@@ -12,7 +12,7 @@ export const TransitionScreen = ({ name }) => {
   return (
     <Box sx={{ width: '100%', backgroundColor: 'yellow' }}>
       <Typography variant='h2'>
-        See you Later {name}
+        See you Later
       </Typography>
     </Box>
   )
