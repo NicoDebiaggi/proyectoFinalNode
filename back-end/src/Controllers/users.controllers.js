@@ -1,25 +1,67 @@
 import jwt from 'jsonwebtoken'
+import { createUser, getUser } from '../database/querys/index.js'
+import bcrypt from 'bcrypt'
 
-export const login = (req, res, next) => {
-  const name = req.body.name
+export const login = async (req, res, next) => {
+  const { email, password } = req.body
   try {
-    if (name) {
-      const adminToken = jwt.sign({
-        id: 1,
-        name: name,
-        email: 'test@gmail.com',
-        role: 'admin',
+    if (req.body) {
+      const user = await getUser({ email, password })
+      const userToken = jwt.sign({
+        id: user._id,
+        name: user.firstName + ' ' + user.lastName,
+        email: user.email,
         timestamp: new Date().toISOString()
-      }, process.env.API_SECRET, { expiresIn: '1m' })
-      req.session.token = adminToken
-      res.send({ adminToken })
+      }, process.env.API_SECRET, { expiresIn: '10m' })
+
+      req.session.token = userToken
+      res.send({
+        token: userToken,
+        user: {
+          id: user._id,
+          name: user.firstName + ' ' + user.lastName,
+          email: user.email
+        }
+      })
     } else {
-      const error = new Error('Name is required')
+      const error = new Error('User not found')
       error.status = 400
       throw error
     }
   } catch (error) {
     error.status = 500
+    next(error)
+  }
+}
+
+export const signUp = async (req, res, next) => {
+  const { firstName, lastName, email, password } = req.body
+  try {
+    if (req.body) {
+      const hashPassword = await bcrypt.hash(password, 10)
+      const user = await createUser({ firstName, lastName, email, password: hashPassword })
+      const userToken = jwt.sign({
+        id: user._id,
+        name: user.firstName + ' ' + user.lastName,
+        email: user.email,
+        timestamp: new Date().toISOString()
+      }, process.env.API_SECRET, { expiresIn: '1m' })
+
+      req.session.token = userToken
+      res.send({
+        token: userToken,
+        user: {
+          id: user._id,
+          name: user.firstName + ' ' + user.lastName,
+          email: user.email
+        }
+      })
+    } else {
+      const error = new Error('User data is required')
+      error.status = 400
+      throw error
+    }
+  } catch (error) {
     next(error)
   }
 }
@@ -40,6 +82,7 @@ export const verifyToken = (req, res, next) => {
     } else {
       const error = new Error('Token is required')
       error.status = 401
+      error.code = 'UNAUTHORIZED'
       throw error
     }
   } catch (error) {

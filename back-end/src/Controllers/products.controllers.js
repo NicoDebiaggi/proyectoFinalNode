@@ -1,46 +1,39 @@
-import { createRequire } from 'module'
-import * as fs from 'fs'
-const require = createRequire(import.meta.url)
-const products = require('../assets/products.json')
+import {
+  addProductDb,
+  getProductsDb,
+  getRandomProductDb,
+  getProductByIdDb,
+  updateProductDb,
+  deleteProductDb
+} from '../database/querys/index.js'
 
-export const getMaxIdProducts = () => {
-  let maxId = 0
-  products?.forEach(product => {
-    if (product.id > maxId) {
-      maxId = product.id
-    }
-  })
-  return maxId
-}
-
-export const getProducts = (req, res, next) => {
+export const getProducts = async (req, res, next) => {
   try {
+    const products = await getProductsDb()
     res.send(products)
   } catch (error) {
-    error.status = 500
     next(error)
   }
 }
 
-export const getRandomProduct = (req, res, next) => {
+export const getRandomProduct = async (req, res, next) => {
   try {
-    const randomProduct = products[Math.floor(Math.random() * products.length)]
+    const randomProduct = await getRandomProductDb()
     res.send(randomProduct)
   } catch (error) {
-    error.status = 500
     next(error)
   }
 }
 
-export const getProductById = (req, res, next) => {
+export const getProductById = async (req, res, next) => {
   try {
-    const productId = Number(req.params.id)
-    const product = products.find(product => product.id === productId)
+    const productId = (req.params.id)
+    const product = await getProductByIdDb(productId)
     if (product) {
       res.send(product)
     } else {
       const error = new Error(`Product with id ${productId} not found`)
-      error.status = 404
+      error.code = 'PRODUCT_NOT_FOUND'
       throw error
     }
   } catch (error) {
@@ -48,7 +41,7 @@ export const getProductById = (req, res, next) => {
   }
 }
 
-export const postProduct = (req, res, next) => {
+export const addProduct = async (req, res, next) => {
   try {
     const newProduct = {
       name: req.body.name,
@@ -56,55 +49,38 @@ export const postProduct = (req, res, next) => {
       code: req.body.code,
       stock: req.body.stock,
       price: req.body.price,
-      thumbnail: req.body.thumbnail,
-      id: getMaxIdProducts() + 1,
-      timestamp: new Date().toISOString()
+      thumbnail: req.body.thumbnail
     }
-    products.push(newProduct)
-    fs.writeFileSync('./src/assets/products.json', JSON.stringify(products))
-    res.send(newProduct)
+    const dbRes = await addProductDb(newProduct)
+    res.send(dbRes)
   } catch (error) {
-    error.status = 500
     next(error)
   }
 }
 
-export const updateProduct = (req, res, next) => {
+export const updateProduct = async (req, res, next) => {
   try {
-    const productId = Number(req.params.id)
+    const productId = req.params.id
     const updatedProduct = req.body
-    const productIndex = products.findIndex(product => product.id === productId)
-
-    if (~productIndex) {
-      products[productIndex] = {
-        ...updatedProduct,
-        id: productId
-      }
-      fs.writeFileSync('./src/assets/products.json', JSON.stringify(products))
-      res.send(products[productIndex])
+    const dbRes = await updateProductDb(productId, updatedProduct)
+    if (dbRes) {
+      res.send(`Product with id ${productId} updated`)
     } else {
-      const error = new Error(`Product with id ${productId} not found`)
-      error.status = 404
-      throw error
+      throw dbRes
     }
   } catch (error) {
     next(error)
   }
 }
 
-export const deleteProduct = (req, res, next) => {
+export const deleteProduct = async (req, res, next) => {
   try {
-    const productId = Number(req.params.id)
-    const productIndex = products.findIndex(product => product.id === productId)
-
-    if (~productIndex) {
-      products.splice(productIndex, 1)
-      fs.writeFileSync('./src/assets/products.json', JSON.stringify(products))
-      res.send(products)
+    const productId = req.params.id
+    const dbRes = await deleteProductDb(productId)
+    if (dbRes) {
+      res.send(`Product with id ${productId} deleted`)
     } else {
-      const error = new Error(`Product with id ${productId} not found`)
-      error.status = 404
-      throw error
+      throw dbRes
     }
   } catch (error) {
     return next(error)

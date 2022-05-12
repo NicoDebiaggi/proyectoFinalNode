@@ -18,7 +18,7 @@ import { useNavigate, Link } from 'react-router-dom'
 export const SignUp = () => {
   const navigate = useNavigate()
 
-  const sigUpService = async (name, password) => {
+  const sigUpService = async (firstName, lastName, email, password) => {
     const res = await fetch('http://localhost:8080/api/signUp', {
       withCredntials: true,
       credentials: 'include',
@@ -26,7 +26,7 @@ export const SignUp = () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ name, password })
+      body: JSON.stringify({ firstName, lastName, email, password })
     })
     return res
   }
@@ -34,10 +34,15 @@ export const SignUp = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
-    if (data.get('email') && data.get('password')) {
-      const res = await sigUpService(data.get('email'), data.get('password'))
+    if (data.get('email') &&
+      data.get('password') &&
+      data.get('firstName') &&
+      data.get('lastName')
+    ) {
+      const res = await sigUpService(data.get('firstName'), data.get('lastName'), data.get('email'), data.get('password'))
+      const parsedData = await res.json()
       if (res.status === 200) {
-        navigate(`/${'test'}`)
+        navigate(`/${parsedData.user.name}`)
       }
     } else {
       console.error('No email or password provided')
